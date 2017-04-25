@@ -26,12 +26,10 @@ sigma = zeros(1, size(X, 2));
 % Hint: You might find the 'mean' and 'std' functions useful.
 %       
 
-
-
-
-
-
-
+ones_vector = ones(size(X,1),size(X,2));
+mu = mean(X);
+sigma = std(X);
+X_norm = (X - repmat(mu,size(X,1), 1)) ./ repmat(sigma, size(X,1), 1);
 
 
 % ============================================================
