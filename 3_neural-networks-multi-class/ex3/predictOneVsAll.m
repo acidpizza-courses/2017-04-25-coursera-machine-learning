@@ -30,10 +30,13 @@ X = [ones(m, 1) X];
 %       for each row.
 %       
 
-
-
-
-
+% X: m training examples by (n+1)=401 features (greyscales)
+% p: m training examples vector, values 1-10
+% num_labels: number of possible results (10)
+% all_theta: num_labels by (n+1) features, where each row is the 
+%            logistic regression classifier to be trained
+ptemp = sigmoid(X*all_theta');
+[val,p] = max(ptemp,[],2);
 
 
 % =========================================================================
