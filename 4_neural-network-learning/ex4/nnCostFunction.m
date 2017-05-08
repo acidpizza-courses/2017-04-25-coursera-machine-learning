@@ -99,7 +99,7 @@ a3 = sigmoid(Theta2*a2_bias);
 % d2 is 26x1
 d3 = a3 - y_matrix(t,:)';
 d2 = (Theta2' * d3) .* a2_bias .* (1 - a2_bias);
-%d2 = (Theta2' * d3) .* sigmoidGradient(Theta1*a1);
+%d2 = (Theta2' * d3) .* [1;sigmoidGradient(Theta1*a1_bias)];
 
 DELTA1 = DELTA1 + (d2(2:end) * a1_bias');
 DELTA2 = DELTA2 + (d3 * a2_bias');
@@ -108,11 +108,21 @@ end;
 Theta1_grad = DELTA1./m;
 Theta2_grad = DELTA2./m;
 
+% Regularisation
+Theta1_reg = Theta1;
+Theta1_reg(:,1) = 0;
+Theta2_reg = Theta2;
+Theta2_reg(:,1) = 0;
+
+Theta1_grad = Theta1_grad + lambda / m * Theta1_reg;
+Theta2_grad = Theta2_grad + lambda / m * Theta2_reg;
+
 %y_matrix = repmat(y, 1, num_labels) == repmat(1:num_labels, m, 1);
 %delta3 = H - y_matrix;
-%delta2 = Theta2' * delta3 .* sigmoidGradient(A*Theta2');
+%delta2 = Theta2' * delta3 .* [ones(num_labels,1) sigmoidGradient(A*Theta1');
 
-%DELTA2 = 0
+%DELTA1 = zeros(hidden_layer_size,input_layer_size + 1);
+%DELTA2 = zeros(num_labels,hidden_layer_size + 1);
 %DELTA2 = DELTA2 + delta3 * H'
 
 % =========================================================================
