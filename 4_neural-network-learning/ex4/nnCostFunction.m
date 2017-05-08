@@ -62,25 +62,58 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+%Add ones to the X data matrix
+X = [ones(m, 1) X];
+A = sigmoid(X*Theta1');
 
+% Add ones to the A data matrix (hidden layer)
+A = [ones(m, 1) A];
+H = sigmoid(A*Theta2');
 
+for i=1:num_labels,
+J = J + 1/m*(-(y==i)' * log(H(:,i)) - (1-(y==i))' * log(1-H(:,i)));
+end;
 
+% apply regularisation
+% ignore theta(1) to prevent regularising it
+theta1_regularised = Theta1;
+theta1_regularised(:,1) = 0;
+theta2_regularised = Theta2;
+theta2_regularised(:,1) = 0;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+J = J + lambda / 2 / m * (sum(sumsq(theta1_regularised)) + sum(sumsq(theta2_regularised)));
 
 % -------------------------------------------------------------
+y_matrix = repmat(y, 1, num_labels) == repmat(1:num_labels, m, 1);
+DELTA1 = zeros(hidden_layer_size,input_layer_size + 1);
+DELTA2 = zeros(num_labels,hidden_layer_size + 1);
+
+for t = 1:m,
+a1_bias = X(t,:)';
+a1 = a1_bias(2:end);
+a2 = sigmoid(Theta1*a1_bias);
+a2_bias = [1; a2];
+a3 = sigmoid(Theta2*a2_bias);
+
+% d3 is 10x1
+% d2 is 26x1
+d3 = a3 - y_matrix(t,:)';
+d2 = (Theta2' * d3) .* a2_bias .* (1 - a2_bias);
+%d2 = (Theta2' * d3) .* sigmoidGradient(Theta1*a1);
+
+DELTA1 = DELTA1 + (d2(2:end) * a1_bias');
+DELTA2 = DELTA2 + (d3 * a2_bias');
+end;
+
+Theta1_grad = DELTA1./m;
+Theta2_grad = DELTA2./m;
+
+%y_matrix = repmat(y, 1, num_labels) == repmat(1:num_labels, m, 1);
+%delta3 = H - y_matrix;
+%delta2 = Theta2' * delta3 .* sigmoidGradient(A*Theta2');
+
+%DELTA2 = 0
+%DELTA2 = DELTA2 + delta3 * H'
 
 % =========================================================================
 
