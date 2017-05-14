@@ -23,8 +23,28 @@ sigma = 0.3;
 %        mean(double(predictions ~= yval))
 %
 
+min_error = 99999;
 
+iteration_vec = [0.01 0.03 0.1 0.3 1 3 10 30]';
 
+for i=1:length(iteration_vec),
+for j=1:length(iteration_vec),
+
+test_C = iteration_vec(i);
+test_sigma = iteration_vec(j);
+
+model= svmTrain(X, y, test_C, @(x1, x2) gaussianKernel(x1, x2, test_sigma)); 
+predictions = svmPredict(model, Xval);
+current_error = mean(double(predictions ~= yval));
+
+if current_error < min_error,
+min_error = current_error;
+C=test_C;
+sigma=test_sigma;
+end;
+
+end;
+end;
 
 
 
