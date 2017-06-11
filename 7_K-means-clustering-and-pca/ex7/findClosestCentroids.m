@@ -21,10 +21,20 @@ idx = zeros(size(X,1), 1);
 % Note: You can use a for-loop over the examples to compute this.
 %
 
+m = size(X,1);
 
-
-
-
+for i=1:m,
+	lowest = norm(X(i,:) - centroids(1,:));
+	lowest_index = 1;
+	for j=2:K,
+		possible_lowest = norm(X(i,:) - centroids(j,:));
+		if possible_lowest < lowest, 
+			lowest = possible_lowest;
+			lowest_index = j;
+		end;
+	end;
+	idx(i) = lowest_index;
+end;
 
 
 % =============================================================

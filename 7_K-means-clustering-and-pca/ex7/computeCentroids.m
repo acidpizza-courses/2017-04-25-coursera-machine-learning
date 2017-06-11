@@ -26,12 +26,21 @@ centroids = zeros(K, n);
 % Note: You can use a for-loop over the centroids to compute this.
 %
 
+num_elements = zeros(K, 1);
 
+for i=1:m,
+	centroids(idx(i),:) = centroids(idx(i),:) + X(i,:);
+	num_elements(idx(i)) = num_elements(idx(i)) + 1;
+end;
 
+% prevent divide by 0 error
+for i=1:K,
+	if num_elements(i) == 0, 
+		num_elements(i) = 1;
+	end;
+end;
 
-
-
-
+centroids = centroids ./ num_elements;
 
 % =============================================================
 
